@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <title> | Probability Basics</title>
+  <meta name="description" content="Thinking about how my brain thinks...
+">
+
+  
+
+  <link rel="shortcut icon" href="/assets/img/favicon.ico">
+
+  <link rel="stylesheet" href="/assets/css/main.css">
+  <link rel="canonical" href="/blog/2020/prob1/">
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+        inlineMath: [['$','$']]
+      }
+    });
+  </script>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+
+
+  <body>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    
+    <span class="site-title">
+        
+        <strong></strong> 
+    </span>
+    
+
+    <nav class="site-nav">
+      <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+              <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+              <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+      <div class="trigger">
+        <!-- About -->
+        <a class="page-link" href="/">about</a>
+
+        <!-- Blog -->
+        <a class="page-link" href="/blog/">blog</a>
+
+        <!-- Pages -->
+        
+          
+        
+          
+        
+          
+        
+          
+            <a class="page-link" href="/publications/">publications</a>
+          
+        
+          
+        
+
+        <!-- CV link -->
+        <!-- <a class="page-link" href="/assets/pdf/CV.pdf">vitae</a> -->
+
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">Probability Basics</h1>
+    <p class="post-meta">March 18, 2020</p>
+  </header>
+
+  <article class="post-content">
+    <h1 id="probability">Probability</h1>
+
+<p>Probability is the logical framework for quantifying uncertainity  and randomness. Central to the subject of probability is the concept of random experiment.</p>
+
+<p>Random Experiment</p>
+
+<p>An experiment whose results may not be same when it is repeated is called an Random Experiment. All possible outcomes of a random experiment is represented by a set called Sample Space S</p>
+
+<p>To do a random experiment we need to define a task whose outcomes are stochiastic (not deterministic). Examples of such tasks are flipping a coin, drawing a card from deck of cards etc…</p>
+
+<p>When a fair coin is flipped there is a 50% chance for head or tails to appear. For a biased coin we can represent the probability to get a head by p. This is modeled by a bernoulli trial given by
+<script type="math/tex">P(X=x) = p^x(1 - p)^{1-x}</script></p>
+
+<p>In the code block below we model a Coin and visualize the outcome by flipping the coin 100 times</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+
+<span class="k">class</span> <span class="nc">Coin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+        <span class="s">"""
+        p(float): Represents the probability to get a head. Fair coin by default as p=0.5
+        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">p</span>
+    <span class="k">def</span> <span class="nf">flip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="s">"""
+        Flips the coin repeat number of times
+        repeat(int): Number of times to repeat the experiment
+        """</span>
+        <span class="n">outcomes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">repeat</span><span class="p">):</span>
+            <span class="n">outcomes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">binomial</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">outcomes</span>
+    <span class="k">def</span> <span class="nf">viz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">):</span>
+        <span class="s">"""
+        Plots a histogram of distribution
+        """</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">"Probability of getting heads or tails in n trails"</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">" 0- Tails 1 - Heads"</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">"Number of heads or tails"</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">outcomes</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">"green"</span><span class="p">)</span>
+        
+<span class="n">coin</span> <span class="o">=</span> <span class="n">Coin</span><span class="p">(</span><span class="mf">0.23</span><span class="p">)</span>
+<span class="n">coin</span><span class="o">.</span><span class="n">viz</span><span class="p">(</span><span class="n">coin</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="mi">100</span><span class="p">))</span>
+
+</code></pre></div></div>
+
+<p><img src="/assets/img/posts/2020_03_18_prob1/output_2_0.png" alt="png" /></p>
+
+<h2 id="random-variable">Random Variable</h2>
+
+<p>A random variable is a function which maps sample space S to real numbers R. Output is random because of randomness of experiment on S. So they are numerical summaries of random experiment. Consider the case of flipping a two coins at the same time. We can define a random variable X which counts the number of heads when flipped at the same time.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>C1</th>
+      <th>C2</th>
+      <th>X</th>
+      <th>P(X=k)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>T</td>
+      <td>T</td>
+      <td>0</td>
+      <td>0.25</td>
+    </tr>
+    <tr>
+      <td>T</td>
+      <td>H</td>
+      <td>1</td>
+      <td>0.25</td>
+    </tr>
+    <tr>
+      <td>H</td>
+      <td>T</td>
+      <td>1</td>
+      <td>0.25</td>
+    </tr>
+    <tr>
+      <td>H</td>
+      <td>H</td>
+      <td>2</td>
+      <td>0.25</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>P(X=0) = P(T, T) = 0.25</p>
+
+<p>P(X=1) = P(H, T) + P(T, H) = 0.25 + 0.25 = 0.5</p>
+
+<p>P(X=2) = P(H, H) = 0.25</p>
+
+<p>P(X=k) is probability mass function (P.M.F). Cumulative distribution function tells if a random will have a value less than or equal to k.</p>
+
+<p>In the code block below we use binomial distribution to simulate flipping multiple coins and plot the PMF (Probability of getting differnet number of heads)</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Coins</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_coins</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+        <span class="s">"""
+        num_coins(int): Number of coins in experiment
+        p(float): probability to get a head
+        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_coins</span> <span class="o">=</span> <span class="n">num_coins</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">p</span>
+    
+    <span class="k">def</span> <span class="nf">flip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_trails</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="s">"""
+        Returns number of success after num_trails
+        """</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">binomial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_coins</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_trails</span><span class="p">)]</span>
+    
+    <span class="k">def</span> <span class="nf">viz_pmf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">):</span>
+        <span class="s">"""
+        Plots probability mass function
+        """</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">outcomes</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">"PMF of a binomial distribution from flipping "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_coins</span><span class="p">)</span> <span class="o">+</span> <span class="s">" coins"</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">"Number of heads"</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">"P(X=k)"</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">outcomes</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">"green"</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">viz_cdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outcomes</span><span class="p">):</span>
+        <span class="s">"""
+        Plots probability mass function
+        """</span>
+        <span class="c1"># Outcome has number of heads for 100 different trails
+</span>        <span class="c1"># To get CDF we need to find cumulative sum
+</span>        <span class="n">cdf_values</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_coins</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">head</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_coins</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">outcomes</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="n">outcomes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">head</span><span class="p">:</span>
+                    <span class="n">cdf_values</span><span class="p">[</span><span class="n">head</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">"CDF of a binomial distribution from flipping n coins"</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">"Number of heads"</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s">"P(X&lt;=k)"</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">cdf_values</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">"green"</span><span class="p">,</span> <span class="n">cumulative</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        
+        
+<span class="n">c1</span> <span class="o">=</span> <span class="n">Coins</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+<span class="n">outcome</span> <span class="o">=</span> <span class="n">c1</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">c1</span><span class="o">.</span><span class="n">viz_pmf</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span>
+<span class="n">c1</span><span class="o">.</span><span class="n">viz_cdf</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p><img src="/assets/img/posts/2020_03_18_prob1/output_4_0.png" alt="png" /></p>
+
+<p><img src="/assets/img/posts/2020_03_18_prob1/output_4_1.png" alt="png" /></p>
+
+<h2 id="joint-distributions">Joint Distributions</h2>
+<p>If X and Y are two discrete random variables, then the joint probability gives the probability for X=k1 and Y=K2 at the same time.</p>
+
+<p>For example if</p>
+
+<p>X is a random variable for number of letters in a word</p>
+
+<p>Y is a random variable for number of vowels in a word</p>
+
+<p>Then P(X=5;Y=2) gives the probability of finding 5 lettered words with two vowels. Whereas P(Y=1) is called marginal probability which gives probability of finding all words with atleast one vowel.</p>
+
+<p>P(Y=1) = <script type="math/tex">\sum_{i=1}^{N}</script>P(X=<script type="math/tex">x_j</script>; Y=1)</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Poem</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">text</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">text</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="s">"""There are numerous strings in your lute, 
+let me add my own among them. Then when you smite your chords, 
+ my heart will break its silence, and my life will be one with your song.  
+"""</span>
+        <span class="n">poem_tokens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">)</span>
+        <span class="n">poem_tokens</span> <span class="o">=</span> <span class="n">poem_tokens</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">" "</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_words</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">poem_tokens</span><span class="p">)</span>
+        <span class="n">vowels</span> <span class="o">=</span> <span class="p">[</span><span class="s">'a'</span><span class="p">,</span> <span class="s">'e'</span><span class="p">,</span> <span class="s">'i'</span><span class="p">,</span> <span class="s">'o'</span><span class="p">,</span> <span class="s">'u'</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">letter_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">poem_tokens</span><span class="p">:</span>
+            <span class="n">vowel_count</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">letter</span> <span class="ow">in</span> <span class="n">word</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">letter</span> <span class="ow">in</span> <span class="n">vowels</span><span class="p">:</span>
+                    <span class="n">vowel_count</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">letter_dict</span><span class="p">[</span><span class="n">word</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s">"len"</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">word</span><span class="p">),</span> <span class="s">"vc"</span><span class="p">:</span> <span class="n">vowel_count</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">joint_prob</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">list_of_interest</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="n">x</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">letter_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">length</span><span class="p">,</span> <span class="n">vc</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="s">"len"</span><span class="p">],</span> <span class="n">value</span><span class="p">[</span><span class="s">"vc"</span><span class="p">]</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">length</span> <span class="o">==</span> <span class="n">x</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">vc</span> <span class="o">==</span> <span class="n">y</span><span class="p">):</span>
+                    <span class="n">list_of_interest</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="nb">ValueError</span><span class="p">(</span><span class="s">"Expecting more vowels than letters"</span><span class="p">)</span>
+        <span class="n">jc_prob</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">list_of_interest</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_words</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">"Joint Probability is "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">jc_prob</span><span class="p">))</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">list_of_interest</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">marg_prob_x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+        <span class="n">loi</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">letter_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">length</span><span class="p">,</span> <span class="n">vc</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="s">"len"</span><span class="p">],</span> <span class="n">value</span><span class="p">[</span><span class="s">"vc"</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">length</span> <span class="o">==</span> <span class="n">x</span><span class="p">:</span>
+                <span class="n">loi</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="n">mp</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">loi</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_words</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">"Marginal Probability of X is "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">mp</span><span class="p">))</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">loi</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">marg_prob_y</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+        <span class="n">loi</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">letter_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">length</span><span class="p">,</span> <span class="n">vc</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="s">"len"</span><span class="p">],</span> <span class="n">value</span><span class="p">[</span><span class="s">"vc"</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">vc</span> <span class="o">==</span> <span class="n">y</span><span class="p">:</span>
+                <span class="n">loi</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="n">mp</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">loi</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_words</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">"Marginal Probability of Y is "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">mp</span><span class="p">))</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">loi</span><span class="p">)</span>
+<span class="n">p1</span> <span class="o">=</span> <span class="n">Poem</span><span class="p">()</span>
+<span class="n">p1</span><span class="o">.</span><span class="n">joint_prob</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">p1</span><span class="o">.</span><span class="n">marg_prob_x</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">p1</span><span class="o">.</span><span class="n">marg_prob_y</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Joint Probability is 0.10526315789473684
+['add', 'own', 'its', 'and']
+Marginal Probability of X is 0.18421052631578946
+['are', 'add', 'own', 'you', 'its', 'and', 'one']
+Marginal Probability of Y is 0.2894736842105263
+['There', 'are', 'your', 'lute,', 'among', 'you', 'smite', 'heart', 'break', 'life', 'one']
+</code></pre></div></div>
+
+<h2 id="conditional-probability">Conditional Probability</h2>
+<p>If A and B are two events where P(B)&gt;0, then the conditional probability for A to occur given B has occured or vice versa is given by</p>
+
+<script type="math/tex; mode=display">P(A|B) = \dfrac{P(A\cap B)}{P(B)}</script>
+
+<script type="math/tex; mode=display">P(B|A) = \dfrac{P(A\cap B)}{P(A)}</script>
+
+<p>which means</p>
+
+<script type="math/tex; mode=display">P(A\cap B) = P(A|B)P(B) = P(B|A)P(A)</script>
+
+<p>Now we can relate probability of an event with conditional probability</p>
+
+<script type="math/tex; mode=display">P(B) = \sum_{j=1}^n P(B|A_j)P(A_j)</script>
+
+<table>
+  <tbody>
+    <tr>
+      <td>or in terms of marginal probability <script type="math/tex">P(B) = \sum_A P(A,B)</script> where P(A,B) is the joint probability given by $$P(A,B) = P(A</td>
+      <td>B)P(B)$$</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="continous-random-variables">Continous Random Variables</h2>
+
+<p>A random variable X is continous in a range if there exists a probability density function for any c &lt;=d defined by</p>
+
+<p><script type="math/tex">% <![CDATA[
+P(c <= X <= d) = \int\limits_c^d f(X) dx %]]></script> such that</p>
+
+<p>1) f(X) &gt;= 0</p>
+
+<p>2) <script type="math/tex">\int\limits_{-\infty}^\infty f(x) dx = 1</script></p>
+
+<p>f(X) is not probability, it is the desnity of probability, ie., “probability for unit mass”. So we need to integrate to get the probability</p>
+
+<p>Gaussian or normal distribution is a continous distribution given by the probability density fucntion</p>
+
+<script type="math/tex; mode=display">f(x | \mu, \sigma^2) = \dfrac{1}{\sqrt{2\pi\sigma^2}} e^{-{\dfrac{x-\mu}{2\sigma^2}}}</script>
+
+<p>We need to integrate this to get probability.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">mu</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">sigma</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span> <span class="c1"># Sampling from gaussian distribution
+</span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">count</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">ignored</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">"green"</span><span class="p">)</span>
+
+<span class="n">c1</span> <span class="o">=</span> <span class="n">Coins</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+<span class="n">outcome</span> <span class="o">=</span> <span class="n">c1</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="mi">10000</span><span class="p">)</span>
+<span class="n">c1</span><span class="o">.</span><span class="n">viz_pmf</span><span class="p">(</span><span class="n">outcome</span><span class="p">)</span>
+
+</code></pre></div></div>
+
+<p><img src="/assets/img/posts/2020_03_18_prob1/output_9_0.png" alt="png" /></p>
+
+<p><img src="/assets/img/posts/2020_03_18_prob1/output_9_1.png" alt="png" /></p>
+
+<h1 id="expected-value">Expected Value</h1>
+<p>Expected value of a random variable is defined as</p>
+
+<script type="math/tex; mode=display">E(X) = \sum_{j=1}^N P(X=x_j)x_j</script>
+
+<p>If X is a random variable whose distribution is bernoulli with p</p>
+
+<script type="math/tex; mode=display">E(X) = P(X=0)*0 + P(X=1) * 1 = (1-p)*0 + p*1 = p</script>
+
+<p>E(X) is a linear operation, so <script type="math/tex">E(\alpha X + Y) = \alpha E(X) + E(Y)</script></p>
+
+<p>If X is a random variable and h is a fuction of X then <script type="math/tex">E(H(X)) = \sum _j h(k_j)p(k_j)</script> This is called change of variables.</p>
+
+<p>E(X) or mean captures only the centeral tendency of a distribution. Variance <script type="math/tex">\sigma ^2</script> is a measure of how much the probability mass is spread out around the mean.</p>
+
+<p>If <script type="math/tex">E(X) = \mu</script> then <script type="math/tex">\sigma ^2 = E(X - \mu)^2  = E(X^2) - E(X) ^2</script></p>
+
+  </article>
+
+  
+
+</div>
+
+      </div>
+    </div>
+
+    <footer>
+
+  <div class="wrapper">
+    &copy; Copyright 2020 .
+    Thinking about how my brain thinks...
+
+    
+  </div>
+
+</footer>
+
+
+    <!-- Load jQuery -->
+<script src="//code.jquery.com/jquery-1.12.4.min.js"></script>
+
+<!-- Load Common JS -->
+<script src="/assets/js/common.js"></script>
+
+
+<!-- Load KaTeX -->
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0/katex.min.js"></script>
+<script src="/assets/js/katex.js"></script>
+
+
+
+
+<!-- Include custom icon fonts -->
+<link rel="stylesheet" href="/assets/css/fontawesome-all.min.css">
+<link rel="stylesheet" href="/assets/css/academicons.min.css">
+
+
+<!-- Google Analytics -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-161403910-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+
+  </body>
+
+</html>
